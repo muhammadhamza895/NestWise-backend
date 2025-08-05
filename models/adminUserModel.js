@@ -8,6 +8,14 @@ const AdminUserSchema = new mongoose.Schema({
         type : Boolean,
         default :true
     },
+    connectId : {
+        type : String,
+        default : ''
+    },
+    onboardingLink : {
+        type : String,
+        default : ''
+    },
     resetToken: { type: String },
     resetTokenExpire: { type: Date },
 });

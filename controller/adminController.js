@@ -8,6 +8,7 @@ import bcrypt from "bcryptjs/dist/bcrypt.js";
 import validator from "validator";
 import AdminUserModel from "../models/adminUserModel.js";
 import jwt from "jsonwebtoken";
+import { stripe } from "../server.js";
 
 const createtoken = (id) => {
   return jwt.sign({ id, isAdmin: true }, process.env.JWT_SECRET, {
@@ -244,7 +245,7 @@ export const signupAdmin = async (req, res) => {
     await newAdminUser.save();
     const token = createtoken(newAdminUser._id);
 
-    return res.json({ token, user: { name: newAdminUser.name, email: newAdminUser.email, isAdmin : newAdminUser.isAdmin }, success: true });
+    return res.json({ token, user: { name: newAdminUser.name, email: newAdminUser.email, isAdmin: newAdminUser.isAdmin }, success: true });
   } catch (error) {
     if (error.code === 11000 && error.keyValue?.email) {
       return res.status(409).json({ message: "Email already exists", success: false });
@@ -268,7 +269,7 @@ export const adminlogin = async (req, res) => {
 
     if (isMatch) {
       const token = createtoken(Registeruser._id);
-      return res.json({ token, user: { name: Registeruser.name, email: Registeruser.email, isAdmin : Registeruser.isAdmin }, success: true });
+      return res.json({ token, user: { name: Registeruser.name, email: Registeruser.email, isAdmin: Registeruser.isAdmin }, success: true });
     } else {
       return res.json({ message: "Invalid password", success: false });
     }
@@ -289,3 +290,127 @@ export const getAdminName = async (req, res) => {
     return res.json({ message: "Server error", success: false });
   }
 }
+
+
+export const getAdminConnectId = async (req, res) => {
+  try {
+    const user = req.user;
+    return res.json({
+      success: true,
+      connectId: user?.connectId || '',
+    });
+  }
+  catch (error) {
+    console.error(error);
+    return res.json({ message: "Server error", success: false });
+  }
+}
+
+export const getStripeAccountStatus = async (req, res) => {
+  try {
+    const { connectId } = req.body
+
+    if (!connectId) {
+      return res.status(400).json({ message: "Connect Id is required", success: false });
+    }
+
+    const account = await stripe.accounts.retrieve(connectId);
+    console.log(account.details_submitted);
+    console.log(account.charges_enabled);
+    console.log(account.payouts_enabled);
+
+    return res.json({
+      success: true,
+      isActivated: account.details_submitted && account.charges_enabled && account.payouts_enabled,
+    });
+  }
+  catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error", success: false });
+  }
+}
+
+export const generateConnectId = async (req, res) => {
+  try {
+    const user = req.user;
+
+    const account = await stripe.accounts.create({
+      type: 'standard',
+      // email: 'seller@example.com',
+      // country: 'US',
+      // capabilities: {
+      //   card_payments: { requested: true },
+      //   transfers: { requested: true },
+      // },
+    });
+    console.log({ account: account.id })
+    user.connectId = account.id
+
+    await user.save()
+    return res.json({
+      success: true,
+      connectId: account.id
+    });
+  }
+  catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error", success: false });
+  }
+}
+
+
+export const generateOnboardingUrl = async (req, res) => {
+  try {
+    const { connectId } = req.body
+
+    if (!connectId) {
+      return res.json({ message: "Connect Id is required", success: false });
+    }
+
+    const accountLink = await stripe.accountLinks.create({
+      account: connectId,
+      type: 'account_onboarding',
+      refresh_url: 'http://localhost:3000/reauth',
+      return_url: 'http://localhost:3000/return',
+    });
+
+    console.log('Onboarding Link:', accountLink.url);
+    return res.json({
+      success: true,
+      onboardingLink: accountLink.url
+    });
+  }
+  catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error", success: false });
+  }
+}
+
+
+export const createCheckoutSession = async (req, res) => {
+  try {
+    const { connectId, product } = req.body;
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [{
+        price_data: {
+          currency: 'usd',
+          product_data: { name: product.name },
+          unit_amount: product.amount,
+        },
+        quantity: 1,
+      }],
+      mode: 'payment',
+      success_url: `${process.env.WEBSITE_URL}/admin/stripe-setup`,
+      cancel_url: `${process.env.WEBSITE_URL}/admin/stripe-setup`,
+    }, {
+      stripeAccount: connectId,
+    });
+
+    return res.json({ url: session.url });
+  } catch (error) {
+    console.error('Checkout session error:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};

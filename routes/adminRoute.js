@@ -5,7 +5,12 @@ import {
   updateAppointmentStatus,
   signupAdmin,
   adminlogin,
-  getAdminName
+  getAdminName,
+  getAdminConnectId,
+  getStripeAccountStatus,
+  generateConnectId,
+  generateOnboardingUrl,
+  createCheckoutSession
 } from '../controller/adminController.js';
 import { adminAuthMiddleware } from '../middleware/authmiddleware.js'
 
@@ -17,5 +22,11 @@ router.get('/me', adminAuthMiddleware, getAdminName);
 router.get('/stats', getAdminStats);
 router.get('/appointments', getAllAppointments);
 router.put('/appointments/status', updateAppointmentStatus);
+
+router.get('/get/connect-id', adminAuthMiddleware, getAdminConnectId)
+router.post('/get/account-status', adminAuthMiddleware, getStripeAccountStatus)
+router.get('/generate/connect-id', adminAuthMiddleware, generateConnectId)
+router.post('/generate/onboarding-url', adminAuthMiddleware, generateOnboardingUrl)
+router.post('/create-checkout-session', createCheckoutSession)
 
 export default router;
