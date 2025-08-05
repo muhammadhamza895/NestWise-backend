@@ -244,7 +244,7 @@ export const signupAdmin = async (req, res) => {
     await newAdminUser.save();
     const token = createtoken(newAdminUser._id);
 
-    return res.json({ token, user: { name: newAdminUser.name, email: newAdminUser.email, isAdmin : newAdminUser.isAdmin }, success: true });
+    return res.json({ token, user: { name: newAdminUser.name, email: newAdminUser.email, isAdmin: newAdminUser.isAdmin }, success: true });
   } catch (error) {
     if (error.code === 11000 && error.keyValue?.email) {
       return res.status(409).json({ message: "Email already exists", success: false });
@@ -268,7 +268,7 @@ export const adminlogin = async (req, res) => {
 
     if (isMatch) {
       const token = createtoken(Registeruser._id);
-      return res.json({ token, user: { name: Registeruser.name, email: Registeruser.email, isAdmin : Registeruser.isAdmin }, success: true });
+      return res.json({ token, user: { name: Registeruser.name, email: Registeruser.email, isAdmin: Registeruser.isAdmin }, success: true });
     } else {
       return res.json({ message: "Invalid password", success: false });
     }
@@ -283,6 +283,21 @@ export const getAdminName = async (req, res) => {
   try {
     const user = await AdminUserModel.findById(req.user.id).select("-password");
     return res.json(user);
+  }
+  catch (error) {
+    console.error(error);
+    return res.json({ message: "Server error", success: false });
+  }
+}
+
+
+export const getAdminConnectId = async (req, res) => {
+  try {
+    const user = await AdminUserModel.findById(req.user.id);
+    return res.json({
+      success : true,
+      connectId : user?.connectId || ''
+    });
   }
   catch (error) {
     console.error(error);

@@ -5,7 +5,8 @@ import {
   updateAppointmentStatus,
   signupAdmin,
   adminlogin,
-  getAdminName
+  getAdminName,
+  getAdminConnectId
 } from '../controller/adminController.js';
 import { adminAuthMiddleware } from '../middleware/authmiddleware.js'
 
@@ -17,5 +18,7 @@ router.get('/me', adminAuthMiddleware, getAdminName);
 router.get('/stats', getAdminStats);
 router.get('/appointments', getAllAppointments);
 router.put('/appointments/status', updateAppointmentStatus);
+
+router.get('/get/connect-id', adminAuthMiddleware, getAdminConnectId)
 
 export default router;
