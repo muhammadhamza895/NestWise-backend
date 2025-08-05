@@ -14,6 +14,8 @@ import appointmentRouter from './routes/appointmentRoute.js';
 import adminRouter from './routes/adminRoute.js';
 import propertyRoutes from './routes/propertyRoutes.js';
 import dealRoutes from './routes/dealRoutes.js';
+import Stripe from 'stripe';
+
 
 dotenv.config();
 
@@ -27,6 +29,8 @@ const limiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   message: { success: false, message: 'Too many requests, please try again later.' }
 });
+
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // Security middlewares
 app.use(limiter);

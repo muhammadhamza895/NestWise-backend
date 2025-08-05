@@ -8,6 +8,7 @@ import bcrypt from "bcryptjs/dist/bcrypt.js";
 import validator from "validator";
 import AdminUserModel from "../models/adminUserModel.js";
 import jwt from "jsonwebtoken";
+import { stripe } from "../server.js";
 
 const createtoken = (id) => {
   return jwt.sign({ id, isAdmin: true }, process.env.JWT_SECRET, {
@@ -293,14 +294,42 @@ export const getAdminName = async (req, res) => {
 
 export const getAdminConnectId = async (req, res) => {
   try {
-    const user = await AdminUserModel.findById(req.user.id);
+    const user = req.user;
     return res.json({
-      success : true,
-      connectId : user?.connectId || ''
+      success: true,
+      connectId: user?.connectId || ''
     });
   }
   catch (error) {
     console.error(error);
     return res.json({ message: "Server error", success: false });
+  }
+}
+
+export const generateConnectId = async (req, res) => {
+  try {
+    const user = req.user;
+
+    const account = await stripe.accounts.create({
+      type: 'standard',
+      // email: 'seller@example.com',
+      // country: 'US',
+      // capabilities: {
+      //   card_payments: { requested: true },
+      //   transfers: { requested: true },
+      // },
+    });
+    console.log({account : account.id})
+    user.connectId = account.id
+
+    await user.save()
+    return res.json({
+      success: true,
+      connectId: account.id
+    });
+  }
+  catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error", success: false });
   }
 }
