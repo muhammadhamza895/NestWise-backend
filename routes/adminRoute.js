@@ -9,7 +9,8 @@ import {
   getAdminConnectId,
   getStripeAccountStatus,
   generateConnectId,
-  generateOnboardingUrl
+  generateOnboardingUrl,
+  createCheckoutSession
 } from '../controller/adminController.js';
 import { adminAuthMiddleware } from '../middleware/authmiddleware.js'
 
@@ -26,5 +27,6 @@ router.get('/get/connect-id', adminAuthMiddleware, getAdminConnectId)
 router.post('/get/account-status', adminAuthMiddleware, getStripeAccountStatus)
 router.get('/generate/connect-id', adminAuthMiddleware, generateConnectId)
 router.post('/generate/onboarding-url', adminAuthMiddleware, generateOnboardingUrl)
+router.post('/create-checkout-session', createCheckoutSession)
 
 export default router;

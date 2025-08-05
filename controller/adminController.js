@@ -385,3 +385,32 @@ export const generateOnboardingUrl = async (req, res) => {
     return res.status(500).json({ message: "Server error", success: false });
   }
 }
+
+
+export const createCheckoutSession = async (req, res) => {
+  try {
+    const { connectId, product } = req.body;
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [{
+        price_data: {
+          currency: 'usd',
+          product_data: { name: product.name },
+          unit_amount: product.amount,
+        },
+        quantity: 1,
+      }],
+      mode: 'payment',
+      success_url: `${process.env.WEBSITE_URL}/admin/stripe-setup`,
+      cancel_url: `${process.env.WEBSITE_URL}/admin/stripe-setup`,
+    }, {
+      stripeAccount: connectId,
+    });
+
+    return res.json({ url: session.url });
+  } catch (error) {
+    console.error('Checkout session error:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
