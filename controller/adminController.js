@@ -297,7 +297,7 @@ export const getAdminConnectId = async (req, res) => {
     const user = req.user;
     return res.json({
       success: true,
-      connectId: user?.connectId || ''
+      connectId: user?.connectId || '',
     });
   }
   catch (error) {
@@ -319,13 +319,41 @@ export const generateConnectId = async (req, res) => {
       //   transfers: { requested: true },
       // },
     });
-    console.log({account : account.id})
+    console.log({ account: account.id })
     user.connectId = account.id
 
     await user.save()
     return res.json({
       success: true,
       connectId: account.id
+    });
+  }
+  catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error", success: false });
+  }
+}
+
+
+export const generateOnboardingUrl = async (req, res) => {
+  try {
+    const { connectId } = req.body
+
+    if (!connectId) {
+      return res.json({ message: "Connect Id is required", success: false });
+    }
+
+    const accountLink = await stripe.accountLinks.create({
+      account: connectId,
+      type: 'account_onboarding',
+      refresh_url: 'http://localhost:3000/reauth',
+      return_url: 'http://localhost:3000/return',
+    });
+
+    console.log('Onboarding Link:', accountLink.url);
+    return res.json({
+      success: true,
+      onboardingLink: accountLink.url
     });
   }
   catch (error) {

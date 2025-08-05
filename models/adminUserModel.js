@@ -12,6 +12,10 @@ const AdminUserSchema = new mongoose.Schema({
         type : String,
         default : ''
     },
+    onboardingLink : {
+        type : String,
+        default : ''
+    },
     resetToken: { type: String },
     resetTokenExpire: { type: Date },
 });

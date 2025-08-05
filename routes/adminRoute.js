@@ -7,7 +7,8 @@ import {
   adminlogin,
   getAdminName,
   getAdminConnectId,
-  generateConnectId
+  generateConnectId,
+  generateOnboardingUrl
 } from '../controller/adminController.js';
 import { adminAuthMiddleware } from '../middleware/authmiddleware.js'
 
@@ -22,5 +23,6 @@ router.put('/appointments/status', updateAppointmentStatus);
 
 router.get('/get/connect-id', adminAuthMiddleware, getAdminConnectId)
 router.get('/generate/connect-id', adminAuthMiddleware, generateConnectId)
+router.post('/generate/onboarding-url', adminAuthMiddleware, generateOnboardingUrl)
 
 export default router;
