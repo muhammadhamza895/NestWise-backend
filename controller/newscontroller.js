@@ -1,7 +1,7 @@
 import News from "../models/newsmodel.js";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
-import transporter from "../config/nodemailer.js";
+// import transporter from "../config/nodemailer.js";
 import { getEmailTemplate } from "../email.js";
 
 const submitNewsletter = async (req, res) => {
@@ -21,7 +21,7 @@ const submitNewsletter = async (req, res) => {
       html: getNewsletterTemplate(email),
     };
 
-    await transporter.sendMail(mailOptions);
+    // await transporter.sendMail(mailOptions);
 
     res.json({ message: "Newsletter submitted successfully" });
   } catch (error) {

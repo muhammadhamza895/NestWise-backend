@@ -2,7 +2,7 @@ import Stats from "../models/statsModel.js";
 import Property from "../models/propertymodel.js";
 import Appointment from "../models/appointmentModel.js";
 import User from "../models/Usermodel.js";
-import transporter from "../config/nodemailer.js";
+// import transporter from "../config/nodemailer.js";
 import { getEmailTemplate } from "../email.js";
 import bcrypt from "bcryptjs/dist/bcrypt.js";
 import validator from "validator";
@@ -216,7 +216,7 @@ export const updateAppointmentStatus = async (req, res) => {
       html: getEmailTemplate(appointment, status),
     };
 
-    await transporter.sendMail(mailOptions);
+    // await transporter.sendMail(mailOptions);
 
     res.json({
       success: true,

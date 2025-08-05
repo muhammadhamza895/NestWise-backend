@@ -2,7 +2,7 @@ import Stats from '../models/statsModel.js';
 import Property from '../models/propertymodel.js';
 import Appointment from '../models/appointmentModel.js';
 import User from '../models/Usermodel.js';
-import transporter from "../config/nodemailer.js";
+// import transporter from "../config/nodemailer.js";
 import { getSchedulingEmailTemplate, getEmailTemplate } from '../email.js';
 
 // Format helpers
@@ -353,7 +353,7 @@ export const cancelAppointment = async (req, res) => {
       `
     };
 
-    await transporter.sendMail(mailOptions);
+    // await transporter.sendMail(mailOptions);
 
     res.json({
       success: true,
@@ -431,7 +431,7 @@ export const updateAppointmentMeetingLink = async (req, res) => {
       `
     };
 
-    await transporter.sendMail(mailOptions);
+    // await transporter.sendMail(mailOptions);
 
     res.json({
       success: true,

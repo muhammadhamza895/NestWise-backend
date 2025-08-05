@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 import validator from "validator";
 import crypto from "crypto";
 import userModel from "../models/Usermodel.js";
-import transporter from "../config/nodemailer.js";
+// import transporter from "../config/nodemailer.js";
 import { getWelcomeTemplate } from "../email.js";
 import { getPasswordResetTemplate } from "../email.js";
 
@@ -92,7 +92,7 @@ const forgotpassword = async (req, res) => {
       html: getPasswordResetTemplate(resetUrl)
     };
 
-    await transporter.sendMail(mailOptions);
+    // await transporter.sendMail(mailOptions);
     return res.status(200).json({ message: "Email sent", success: true });
   } catch (error) {
     console.error(error);
