@@ -207,7 +207,7 @@ export const getNewsletterTemplate = (email) => `
 
     <!-- CTA Button -->
     <div style="text-align: center; margin: 35px 0;">
-      <a href="${process.env.WEBSITE_URL}"
+      <a href=""
          style="display: inline-block; padding: 16px 30px; background: linear-gradient(135deg, #2563eb, #1e40af); color: white; text-decoration: none; border-radius: 8px; font-weight: bold; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);">
         Explore Properties
       </a>
@@ -289,7 +289,7 @@ export const getWelcomeTemplate = (name) => `
 
     <!-- CTA Button -->
     <div style="text-align: center; margin: 35px 0;">
-      <a href="${process.env.WEBSITE_URL}/properties"
+      <a href=""
          style="display: inline-block; padding: 16px 30px; background: linear-gradient(135deg, #2563eb, #1e40af); color: white; text-decoration: none; border-radius: 8px; font-weight: bold; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);">
         Start Exploring Properties
       </a>

@@ -74,30 +74,30 @@ const register = async (req, res) => {
 };
 
 const forgotpassword = async (req, res) => {
-  try {
-    const { email } = req.body;
-    const user = await userModel.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "Email not found", success: false });
-    }
-    const resetToken = crypto.randomBytes(20).toString("hex");
-    user.resetToken = resetToken;
-    user.resetTokenExpire = Date.now() + 10 * 60 * 1000; // 1 hour
-    await user.save();
-    const resetUrl = `${process.env.WEBSITE_URL}/reset/${resetToken}`;
-    const mailOptions = {
-      from: process.env.EMAIL,
-      to: email,
-      subject: "Password Reset - BuildEstate Security",
-      html: getPasswordResetTemplate(resetUrl)
-    };
+  // try {
+  //   const { email } = req.body;
+  //   const user = await userModel.findOne({ email });
+  //   if (!user) {
+  //     return res.status(404).json({ message: "Email not found", success: false });
+  //   }
+  //   const resetToken = crypto.randomBytes(20).toString("hex");
+  //   user.resetToken = resetToken;
+  //   user.resetTokenExpire = Date.now() + 10 * 60 * 1000; // 1 hour
+  //   await user.save();
+  //   const resetUrl = `${process.env.WEBSITE_URL}/reset/${resetToken}`;
+  //   const mailOptions = {
+  //     from: process.env.EMAIL,
+  //     to: email,
+  //     subject: "Password Reset - BuildEstate Security",
+  //     html: getPasswordResetTemplate(resetUrl)
+  //   };
 
-    // await transporter.sendMail(mailOptions);
-    return res.status(200).json({ message: "Email sent", success: true });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Server error", success: false });
-  }
+  //   // await transporter.sendMail(mailOptions);
+  //   return res.status(200).json({ message: "Email sent", success: true });
+  // } catch (error) {
+  //   console.error(error);
+  //   return res.status(500).json({ message: "Server error", success: false });
+  // }
 };
 
 const resetpassword = async (req, res) => {
