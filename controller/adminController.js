@@ -306,6 +306,30 @@ export const getAdminConnectId = async (req, res) => {
   }
 }
 
+export const getStripeAccountStatus = async (req, res) => {
+  try {
+    const { connectId } = req.body
+
+    if (!connectId) {
+      return res.status(400).json({ message: "Connect Id is required", success: false });
+    }
+
+    const account = await stripe.accounts.retrieve(connectId);
+    console.log(account.details_submitted);
+    console.log(account.charges_enabled);
+    console.log(account.payouts_enabled);
+
+    return res.json({
+      success: true,
+      isActivated: account.details_submitted && account.charges_enabled && account.payouts_enabled,
+    });
+  }
+  catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error", success: false });
+  }
+}
+
 export const generateConnectId = async (req, res) => {
   try {
     const user = req.user;

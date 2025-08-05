@@ -7,6 +7,7 @@ import {
   adminlogin,
   getAdminName,
   getAdminConnectId,
+  getStripeAccountStatus,
   generateConnectId,
   generateOnboardingUrl
 } from '../controller/adminController.js';
@@ -22,6 +23,7 @@ router.get('/appointments', getAllAppointments);
 router.put('/appointments/status', updateAppointmentStatus);
 
 router.get('/get/connect-id', adminAuthMiddleware, getAdminConnectId)
+router.post('/get/account-status', adminAuthMiddleware, getStripeAccountStatus)
 router.get('/generate/connect-id', adminAuthMiddleware, generateConnectId)
 router.post('/generate/onboarding-url', adminAuthMiddleware, generateOnboardingUrl)
 
