@@ -370,8 +370,8 @@ export const generateOnboardingUrl = async (req, res) => {
     const accountLink = await stripe.accountLinks.create({
       account: connectId,
       type: 'account_onboarding',
-      refresh_url: 'http://localhost:3000/reauth',
-      return_url: 'http://localhost:3000/return',
+      refresh_url: `${process.env.WEBSITE_URL}/admin/stripe-setup`,
+      return_url: `${process.env.WEBSITE_URL}/admin/stripe-setup`,
     });
 
     console.log('Onboarding Link:', accountLink.url);
