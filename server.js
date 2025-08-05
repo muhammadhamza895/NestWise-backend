@@ -49,7 +49,7 @@ await connectdb().then(() => {
   console.error('Database connection error:', err);
 });
 
-app.get('/test'=(req, res)=>{
+app.get('/test', (req, res)=>{
   return res.send('backend deployed')
 })
 
